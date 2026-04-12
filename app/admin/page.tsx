@@ -174,14 +174,18 @@ export default function AdminPage() {
     <main className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors cursor-pointer">
-            FilmsCatalogue
+          <Link href="/" className="flex items-center gap-2 group cursor-pointer border border-slate-200 hover:border-slate-300 rounded-xl px-3 py-1.5 transition-colors">
+            <span className="text-sm leading-none">🎬</span>
+            <span className="text-sm font-bold text-slate-900 tracking-tight group-hover:text-slate-600 transition-colors leading-none">
+              FilmsCatalogue
+            </span>
           </Link>
           <Link
             href="/movies"
             className="flex items-center gap-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
           >
-            ← Catalogue
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            Catalogue
           </Link>
         </div>
       </header>

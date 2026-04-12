@@ -4,9 +4,12 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 flex flex-col">
       <header className="bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
-        <span className="text-sm font-semibold text-slate-900 tracking-tight">
-          FilmsCatalogue
-        </span>
+        <div className="max-w-7xl mx-auto">
+          <span className="inline-flex items-center gap-2 border border-slate-200 rounded-xl px-3 py-1.5">
+            <span className="text-sm leading-none">🎬</span>
+            <span className="text-sm font-bold text-slate-900 tracking-tight leading-none">FilmsCatalogue</span>
+          </span>
+        </div>
       </header>
       <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-12 sm:py-20">
         <div className="text-center max-w-lg w-full">
