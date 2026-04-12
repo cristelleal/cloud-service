@@ -1,5 +1,3 @@
-// app/api/health/mongodb/route.ts
-
 import { NextResponse } from 'next/server'
 import mongoose from 'mongoose'
 import connectDB from '@/lib/mongodb'

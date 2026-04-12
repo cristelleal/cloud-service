@@ -1,7 +1,8 @@
 // app/api/movies/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getPopularMovies, searchMovies } from '@/lib/tmdb'
+import { getPopularMovies, searchMovies, TMDBResponse } from '@/lib/tmdb'
+import redis from '@/lib/redis'
 
 // GET /api/movies?search=batman — Films populaires ou résultats de recherche
 export async function GET(request: NextRequest) {
@@ -10,11 +11,21 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('search')
     const page = parseInt(searchParams.get('page') || '1')
 
-    let data
+    let data: TMDBResponse
     if (query) {
       data = await searchMovies(query)
     } else {
+      const cacheKey = `tmdb:popular:page:${page}`
+
+      const cached = await redis.get<TMDBResponse>(cacheKey)
+      if (cached) {
+        console.log(`[Cache HIT] ${cacheKey}`)
+        return NextResponse.json({ success: true, data: cached }, { status: 200 })
+      }
+
+      console.log(`[Cache MISS] ${cacheKey} — appel TMDB`)
       data = await getPopularMovies(page)
+      await redis.set(cacheKey, data, { ex: 3600 })
     }
 
     return NextResponse.json(

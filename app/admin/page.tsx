@@ -58,6 +58,7 @@ export default function AdminPage() {
   const [results, setResults] = useState<HealthResult[]>([
     { status: "loading", service: "mongodb", message: "Vérification en cours..." },
     { status: "loading", service: "tmdb",    message: "Vérification en cours..." },
+    { status: "loading", service: "redis",   message: "Vérification en cours..." },
   ]);
   const [lastCheck, setLastCheck] = useState<string>("");
 
@@ -65,15 +66,17 @@ export default function AdminPage() {
     setResults([
       { status: "loading", service: "mongodb", message: "Vérification en cours..." },
       { status: "loading", service: "tmdb",    message: "Vérification en cours..." },
+      { status: "loading", service: "redis",   message: "Vérification en cours..." },
     ]);
 
-    // Lancement des deux checks en parallèle
+    // Lancement des trois checks en parallèle
     const checks = await Promise.allSettled([
       fetch("/api/health/mongodb").then((r) => r.json()),
       fetch("/api/health/tmdb").then((r) => r.json()),
+      fetch("/api/health/redis").then((r) => r.json()),
     ]);
 
-    const services = ["mongodb", "tmdb"];
+    const services = ["mongodb", "tmdb", "redis"];
     setResults(
       checks.map((result, i) =>
         result.status === "fulfilled"

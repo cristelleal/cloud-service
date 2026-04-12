@@ -30,10 +30,7 @@ export function getPosterUrl(posterPath: string): string {
 export async function getPopularMovies(page = 1): Promise<TMDBResponse> {
   const url = `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=fr-FR&page=${page}`;
 
-  const res = await fetch(url, {
-    // Cache revalidé toutes les heures
-    next: { revalidate: 3600 },
-  });
+  const res = await fetch(url, { cache: 'no-store' });
 
   if (!res.ok) {
     throw new Error(`Erreur TMDB: ${res.status} ${res.statusText}`);
