@@ -3,15 +3,15 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 flex flex-col">
-      <header className="bg-white/80 backdrop-blur-lg border-b border-slate-100 px-8 py-4">
+      <header className="bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
         <span className="text-sm font-semibold text-slate-900 tracking-tight">
           FilmsCatalogue
         </span>
       </header>
-      <div className="flex-1 flex flex-col items-center justify-center px-8 py-20">
-        <div className="text-center max-w-lg">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-12 sm:py-20">
+        <div className="text-center max-w-lg w-full">
           <div className="text-5xl mb-6">🎬</div>
-          <h1 className="text-4xl font-semibold text-slate-900 tracking-tight mb-4">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-tight mb-4">
             Bienvenue sur FilmsCatalogue
           </h1>
           <p className="text-slate-500 text-base leading-relaxed mb-10">
@@ -36,7 +36,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl w-full">
+        <div className="mt-12 sm:mt-20 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl w-full">
           {[
             {
               icon: "🔍",

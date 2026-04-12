@@ -262,7 +262,7 @@ export default function MoviesPage() {
         />
       )}
 
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-8 py-4">
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors">
             FilmsCatalogue
@@ -287,9 +287,9 @@ export default function MoviesPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-8 py-10">
-        <div className="mb-10">
-          <h1 className="text-4xl font-semibold text-slate-900 tracking-tight">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
+        <div className="mb-8 sm:mb-10">
+          <h1 className="text-2xl sm:text-4xl font-semibold text-slate-900 tracking-tight">
             Catalogue de films
           </h1>
           <p className="text-slate-400 mt-2 text-sm">
@@ -297,7 +297,7 @@ export default function MoviesPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSearch} className="flex gap-3 mb-10 max-w-2xl">
+        <form onSubmit={handleSearch} className="flex gap-3 mb-8 sm:mb-10 max-w-2xl">
           <div className="relative flex-1">
             <svg
               className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
@@ -322,15 +322,20 @@ export default function MoviesPage() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-slate-900 text-white px-7 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 whitespace-nowrap"
+            className="bg-slate-900 text-white px-4 sm:px-7 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 whitespace-nowrap"
           >
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Recherche
+                <span className="hidden sm:inline">Recherche</span>
               </span>
             ) : (
-              "Rechercher"
+              <>
+                <span className="hidden sm:inline">Rechercher</span>
+                <svg className="w-4 h-4 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+                </svg>
+              </>
             )}
           </button>
         </form>
@@ -342,8 +347,8 @@ export default function MoviesPage() {
           </div>
         )}
 
-        <div className="flex gap-10 items-start">
-          <div className="flex-1 min-w-0">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
+          <div className="flex-1 min-w-0 w-full">
             <div className="flex items-baseline gap-2 mb-6">
               <h2 className="font-semibold text-slate-900">Résultats</h2>
               <span className="text-slate-400 text-sm">
@@ -362,7 +367,7 @@ export default function MoviesPage() {
             </div>
           </div>
 
-          <div className="w-80 flex-shrink-0">
+          <div className="w-full lg:w-80 lg:flex-shrink-0">
             <div className="flex items-baseline gap-2 mb-6">
               <h2 className="font-semibold text-slate-900">Mes favoris</h2>
               {favorites.length > 0 && (

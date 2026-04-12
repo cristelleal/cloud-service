@@ -172,7 +172,7 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-8 py-4">
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors">
             FilmsCatalogue
@@ -186,10 +186,10 @@ export default function AdminPage() {
         </div>
       </header>
 
-      <div className="max-w-3xl mx-auto px-8 py-10">
+      <div className="max-w-3xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
         <div className="flex items-start justify-between mb-10">
           <div>
-            <h1 className="text-4xl font-semibold text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-semibold text-slate-900 tracking-tight">
               Santé des services
             </h1>
             <p className="text-slate-400 mt-2 text-sm">
