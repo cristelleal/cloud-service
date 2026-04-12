@@ -1,36 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cloud Service : Projet de catalogue de films
 
-## Getting Started
+Application Next.js fullstack permettant de rechercher des films via l'API TMDB, de les ajouter en favoris (stockés dans MongoDB) et de bénéficier d'un cache Redis pour améliorer l'expérience.
 
-First, run the development server:
+---
+
+## Stack technique
+
+- **Next.js 16** (App Router, webpack)
+- **MongoDB / Mongoose** : persistance des favoris
+- **Upstash Redis** : cache des films populaires
+- **TMDB API** : source des données films
+- **Tailwind CSS** : interface
+
+---
+
+## Prérequis
+
+- Node.js 18+
+- Un compte [MongoDB Atlas](https://www.mongodb.com/atlas)
+- Un compte [Upstash](https://upstash.com/) (Redis serverless)
+- Une clé API [TMDB](https://www.themoviedb.org/settings/api)
+
+---
+
+## Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Cloner le dépôt
+git clone <url-du-repo>
+cd cloud-service
+
+# 2. Installer les dépendances
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuration des variables d'environnement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Créer un fichier `.env.local` à la racine du projet :
 
-## Learn More
+```env
+# MongoDB
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/?appName=Cluster0
 
-To learn more about Next.js, take a look at the following resources:
+# TMDB
+TMDB_BASE_URL=https://api.themoviedb.org/3
+TMDB_API_KEY=<votre_clé_tmdb>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Upstash Redis
+UPSTASH_REDIS_REST_URL=https://<votre-instance>.upstash.io
+UPSTASH_REDIS_REST_TOKEN=<votre_token>
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Lancer le projet
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Développement (webpack, sans Turbopack)
+npm run dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Build de production
+npm run build
+
+# Serveur de production
+npm start
+```
+
+L'application est accessible sur [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Pages et endpoints
+
+### Pages
+
+| Route | Description |
+|-------|-------------|
+| `/movies` | Catalogue de films, recherche et gestion des favoris |
+| `/admin` | Dashboard de santé des services (MongoDB, TMDB, Redis) |
+
+### API
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| `GET` | `/api/movies` | Films populaires (avec cache Redis) |
+| `GET` | `/api/movies?search=batman` | Recherche de films |
+| `GET` | `/api/movies?page=2` | Films populaires page N |
+| `GET` | `/api/favorites` | Liste tous les favoris |
+| `POST` | `/api/favorites` | Ajoute un film en favori |
+| `GET` | `/api/favorites/:id` | Récupère un favori par son ID MongoDB |
+| `DELETE` | `/api/favorites/:id` | Supprime un favori |
+| `GET` | `/api/health/mongodb` | Santé de la connexion MongoDB |
+| `GET` | `/api/health/tmdb` | Santé de l'API TMDB |
+| `GET` | `/api/health/redis` | Santé de la connexion Redis |
+
+---
+
+## Questions de réflexion
+
+### 1. Quelle est la différence de latence entre un cache miss et un cache hit ?
+
+D'après les mesures effectuées en développement :
+
+| Appel | Latence `application-code` |
+|-------|---------------------------|
+| Cache MISS (appel TMDB) | ~200–400 ms |
+| Cache HIT (lecture Redis) | ~4–15 ms |
+
+Le gain est de l'ordre de **×20 à ×50**. La latence résiduelle sur les HIT correspond au temps que prend le réseau pour faire l'aller-retour jusqu'à Upstash (hébergé en edge, ~5–30 ms selon la région).
+
+### 2. Pourquoi ne pas mettre en cache les résultats de `searchMovies` avec un TTL long ?
+
+Trois raisons :
+
+- **Variabilité des requêtes** : les termes de recherche forment un espace quasiment infini. Mettre chaque résultat en cache viderait Redis sans jamais être réutilisé.
+- **Pertinence temporelle** : TMDB ajoute des films en continu. Un résultat mis en cache hier pour "batman" peut ne plus refléter les nouveautés.
+- **Coût vs bénéfice** : les films populaires sont demandés des milliers de fois avec les mêmes paramètres (`page=1`). Une recherche utilisateur est par définition personnelle et peu répétée.
+
+Un TTL court (60–300 s) serait acceptable pour des termes très populaires, mais reste de la sur-optimisation dans la plupart des cas.
+
+### 3. Que se passe-t-il si Redis est indisponible ? Comment rendre le code résilient ?
+
+Sans protection, si Upstash est down, `redis.get()` lève une exception qui remonte jusqu'au `catch` de la route → **500** pour l'utilisateur, alors que TMDB est parfaitement accessible.
+
+La solution est d'envelopper les appels Redis dans un try/catch dédié et continuer vers TMDB en cas d'échec.
+
+```ts
+const cacheKey = `tmdb:popular:page:${page}`
+
+try {
+  const cached = await redis.get<TMDBResponse>(cacheKey)
+  if (cached) {
+    console.log(`[Cache HIT] ${cacheKey}`)
+    return NextResponse.json({ success: true, data: cached }, { status: 200 })
+  }
+} catch (redisError) {
+  // Redis indisponible : on continue sans cache
+  console.warn('[Cache] Redis inaccessible, fallback TMDB:', redisError)
+}
+
+data = await getPopularMovies(page)
+
+try {
+  await redis.set(cacheKey, data, { ex: 3600 })
+} catch {
+  // Écriture échouée : pas bloquant
+  console.warn("[Cache] Impossible d'écrire dans Redis")
+}
+```
+
+**Principe** : Redis est une optimisation, pas une dépendance critique. L'application doit fonctionner (plus lentement) même si le cache est hors ligne.
