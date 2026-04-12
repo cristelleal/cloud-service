@@ -199,6 +199,7 @@ export default function MoviesPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadFavorites();
     void fetch("/api/movies")
       .then((r) => r.json())
@@ -263,9 +264,9 @@ export default function MoviesPage() {
 
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-8 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="text-sm font-semibold text-slate-900 tracking-tight">
+          <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors">
             FilmsCatalogue
-          </span>
+          </Link>
           <div className="flex items-center gap-4">
             {favorites.length > 0 && (
               <span className="text-xs text-slate-500">
