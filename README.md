@@ -1,6 +1,6 @@
-# Cloud Service : Projet de catalogue de films
+# Cloud Service : Projet de catalogue de films ♥
 
-Application Next.js fullstack permettant de rechercher des films via l'API TMDB, de les ajouter en favoris (stockés dans MongoDB) et de bénéficier d'un cache Redis pour améliorer l'expérience.
+Application Next.js fullstack permettant de rechercher des films via l'API TMDB, de les ajouter en favoris (stockés dans MongoDB) et de bénéficier d'un cache Redis pour améliorer l'expérience. Design amélioré : épuré, light theme.
 
 ![Page catalogue](app/assets/movies-page.png)
 
@@ -142,3 +142,5 @@ Sans protection, si Upstash est down, `redis.get()` lève une exception qui remo
 La solution est d'envelopper les appels Redis dans un try/catch dédié et continuer vers TMDB en cas d'échec.
 
 **Principe** : Redis est une optimisation, pas une dépendance critique. L'application doit fonctionner (plus lentement) même si le cache est hors ligne.
+
+### Merci de m'avoie lue ヅ
