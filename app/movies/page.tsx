@@ -57,7 +57,7 @@ function MovieCard({
           className={`text-xs py-2.5 rounded-xl font-medium transition-all duration-200 ${
             isFavorite
               ? "bg-slate-100 text-slate-400 cursor-default"
-              : "bg-slate-900 text-white hover:bg-slate-700 active:scale-95"
+              : "bg-slate-900 text-white hover:bg-slate-700 active:scale-95 cursor-pointer"
           }`}
         >
           {isFavorite ? "✓ En favoris" : "+ Ajouter aux favoris"}
@@ -117,7 +117,7 @@ function DetailModal({
           </div>
           <button
             onClick={onClose}
-            className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors active:scale-95"
+            className="w-full bg-slate-900 text-white py-3 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors active:scale-95 cursor-pointer"
           >
             Fermer
           </button>
@@ -164,13 +164,13 @@ function FavoriteCard({
         <div className="mt-auto flex gap-3 pt-2">
           <button
             onClick={() => onViewDetails(favorite._id)}
-            className="text-xs text-slate-500 hover:text-slate-900 font-medium transition-colors underline underline-offset-2 decoration-slate-300 hover:decoration-slate-700"
+            className="text-xs text-slate-500 hover:text-slate-900 font-medium transition-colors underline underline-offset-2 decoration-slate-300 hover:decoration-slate-700 cursor-pointer"
           >
             Détails
           </button>
           <button
             onClick={() => onDelete(favorite._id)}
-            className="text-xs text-rose-400 hover:text-rose-600 font-medium transition-colors"
+            className="text-xs text-rose-400 hover:text-rose-600 font-medium transition-colors cursor-pointer"
           >
             Supprimer
           </button>
@@ -264,7 +264,7 @@ export default function MoviesPage() {
 
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors">
+          <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors cursor-pointer">
             FilmsCatalogue
           </Link>
           <div className="flex items-center gap-4">
@@ -278,7 +278,7 @@ export default function MoviesPage() {
             )}
             <Link
               href="/admin"
-              className="flex items-center gap-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors"
+              className="flex items-center gap-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Admin
@@ -322,7 +322,7 @@ export default function MoviesPage() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-slate-900 text-white px-4 sm:px-7 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 whitespace-nowrap"
+            className="bg-slate-900 text-white px-4 sm:px-7 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 whitespace-nowrap cursor-pointer"
           >
             {loading ? (
               <span className="flex items-center gap-2">

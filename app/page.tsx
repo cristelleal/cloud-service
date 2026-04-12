@@ -22,13 +22,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/movies"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-700 transition-all active:scale-95 shadow-lg shadow-slate-900/15"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-700 transition-all active:scale-95 shadow-lg shadow-slate-900/15 cursor-pointer"
             >
               Parcourir les films
             </Link>
             <Link
               href="/admin"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-slate-700 px-8 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-100 transition-all active:scale-95 shadow-lg shadow-slate-200/60"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-slate-700 px-8 py-3.5 rounded-2xl text-sm font-medium hover:bg-slate-100 transition-all active:scale-95 shadow-lg shadow-slate-200/60 cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               État des services

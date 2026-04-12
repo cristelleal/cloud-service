@@ -174,12 +174,12 @@ export default function AdminPage() {
     <main className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-4 sm:px-8 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors">
+          <Link href="/" className="text-sm font-semibold text-slate-900 tracking-tight hover:text-slate-600 transition-colors cursor-pointer">
             FilmsCatalogue
           </Link>
           <Link
             href="/movies"
-            className="flex items-center gap-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors"
+            className="flex items-center gap-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
           >
             ← Catalogue
           </Link>
@@ -210,7 +210,7 @@ export default function AdminPage() {
               void runHealthChecks();
             }}
             disabled={isChecking}
-            className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 mt-1"
+            className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 mt-1 cursor-pointer"
           >
             <svg
               className={`w-3.5 h-3.5 ${isChecking ? "animate-spin" : ""}`}
