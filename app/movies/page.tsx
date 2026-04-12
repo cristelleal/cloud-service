@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, FormEvent } from "react";
+import Link from "next/link";
 import { getPosterUrl, TMDBMovie } from "@/lib/tmdb";
 
 interface Favorite {
@@ -265,14 +266,23 @@ export default function MoviesPage() {
           <span className="text-sm font-semibold text-slate-900 tracking-tight">
             FilmsCatalogue
           </span>
-          {favorites.length > 0 && (
-            <span className="text-xs text-slate-500">
-              <span className="font-semibold text-slate-900">
-                {favorites.length}
-              </span>{" "}
-              favori{favorites.length > 1 ? "s" : ""}
-            </span>
-          )}
+          <div className="flex items-center gap-4">
+            {favorites.length > 0 && (
+              <span className="text-xs text-slate-500">
+                <span className="font-semibold text-slate-900">
+                  {favorites.length}
+                </span>{" "}
+                favori{favorites.length > 1 ? "s" : ""}
+              </span>
+            )}
+            <Link
+              href="/admin"
+              className="flex items-center gap-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-full transition-colors"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Admin
+            </Link>
+          </div>
         </div>
       </header>
 
