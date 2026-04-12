@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, FormEvent } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { getPosterUrl, TMDBMovie } from "@/lib/tmdb";
 
@@ -208,7 +208,7 @@ export default function MoviesPage() {
       });
   }, [loadFavorites]);
 
-  const handleSearch = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!query.trim()) return;
     setLoading(true);

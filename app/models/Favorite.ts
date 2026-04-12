@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-// Interface TypeScript pour le typage
 export interface IFavorite extends Document {
   tmdbId: number;
   title: string;
@@ -11,7 +10,6 @@ export interface IFavorite extends Document {
   addedAt: Date;
 }
 
-// Schéma Mongoose
 const FavoriteSchema = new Schema<IFavorite>(
   {
     tmdbId: {
@@ -49,12 +47,10 @@ const FavoriteSchema = new Schema<IFavorite>(
     },
   },
   {
-    // Ajoute automatiquement createdAt et updatedAt
     timestamps: true,
   },
 );
 
-// Évite la re-création du modèle lors des rechargements HMR
 const Favorite: Model<IFavorite> =
   mongoose.models.Favorite ||
   mongoose.model<IFavorite>("Favorite", FavoriteSchema);

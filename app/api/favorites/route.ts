@@ -1,10 +1,7 @@
-// app/api/favorites/route.ts
-
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Favorite from '@/models/Favorite'
 
-// GET /api/favorites — Liste tous les favoris
 export async function GET() {
   try {
     await connectDB()
@@ -24,7 +21,6 @@ export async function GET() {
   }
 }
 
-// POST /api/favorites — Ajoute un film en favori
 export async function POST(request: NextRequest) {
   try {
     await connectDB()
@@ -32,7 +28,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { tmdbId, title, posterPath, overview, releaseDate, voteAverage } = body
 
-    // Validation basique
     if (!tmdbId || !title) {
       return NextResponse.json(
         { success: false, error: 'tmdbId et title sont requis' },
@@ -40,7 +35,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Vérification doublon
     const existing = await Favorite.findOne({ tmdbId })
     if (existing) {
       return NextResponse.json(

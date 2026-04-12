@@ -1,10 +1,7 @@
-// app/api/favorites/[id]/route.ts
-
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Favorite from '@/models/Favorite'
 
-// GET /api/favorites/:id — Récupère un favori par son identifiant MongoDB
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -35,7 +32,6 @@ export async function GET(
   }
 }
 
-// DELETE /api/favorites/:id — Supprime un favori
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

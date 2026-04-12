@@ -1,5 +1,3 @@
-// app/api/health/redis/route.ts
-
 import { NextResponse } from 'next/server'
 import redis from '@/lib/redis'
 
@@ -7,7 +5,6 @@ export async function GET() {
   const start = Date.now()
 
   try {
-    // Ping léger : écriture + lecture d'une clé temporaire
     await redis.set('health:ping', 'pong', { ex: 10 })
     const pong = await redis.get('health:ping')
 

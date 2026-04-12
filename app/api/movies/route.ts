@@ -1,10 +1,7 @@
-// app/api/movies/route.ts
-
 import { NextRequest, NextResponse } from 'next/server'
 import { getPopularMovies, searchMovies, TMDBResponse } from '@/lib/tmdb'
 import redis from '@/lib/redis'
 
-// GET /api/movies?search=batman — Films populaires ou résultats de recherche
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)

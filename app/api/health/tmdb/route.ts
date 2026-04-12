@@ -7,7 +7,6 @@ export async function GET() {
   const start = Date.now();
 
   try {
-    // On appelle un endpoint léger de l'API TMDB pour vérifier qu'elle répond
     const res = await fetch(
       `${TMDB_BASE_URL}/configuration?api_key=${TMDB_API_KEY}`,
       { cache: "no-store" },

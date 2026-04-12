@@ -2,7 +2,6 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY!;
 const TMDB_BASE_URL = process.env.TMDB_BASE_URL!;
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 
-// Types TypeScript
 export interface TMDBMovie {
   id: number;
   title: string;
@@ -20,13 +19,11 @@ export interface TMDBResponse {
   total_results: number;
 }
 
-// Fonction utilitaire pour construire l'URL complète de l'image
 export function getPosterUrl(posterPath: string): string {
   if (!posterPath) return "/placeholder-movie.png";
   return `${TMDB_IMAGE_BASE}${posterPath}`;
 }
 
-// Récupère les films populaires
 export async function getPopularMovies(page = 1): Promise<TMDBResponse> {
   const url = `${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=fr-FR&page=${page}`;
 
@@ -39,12 +36,10 @@ export async function getPopularMovies(page = 1): Promise<TMDBResponse> {
   return res.json();
 }
 
-// Recherche de films
 export async function searchMovies(query: string): Promise<TMDBResponse> {
   const url = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&language=fr-FR&query=${encodeURIComponent(query)}`;
 
   const res = await fetch(url, {
-    // Pas de cache pour les recherches (résultats variables)
     cache: "no-store",
   });
 
@@ -55,12 +50,11 @@ export async function searchMovies(query: string): Promise<TMDBResponse> {
   return res.json();
 }
 
-// Récupère les détails d'un film
 export async function getMovieById(id: number): Promise<TMDBMovie> {
   const url = `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&language=fr-FR`;
 
   const res = await fetch(url, {
-    next: { revalidate: 86400 }, // Cache 24h pour les détails
+    next: { revalidate: 86400 },
   });
 
   if (!res.ok) {

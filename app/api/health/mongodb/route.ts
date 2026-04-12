@@ -8,7 +8,6 @@ export async function GET() {
   try {
     await connectDB()
 
-    // readyState 1 = connecté
     const isConnected = mongoose.connection.readyState === 1
 
     if (!isConnected) {
@@ -24,7 +23,6 @@ export async function GET() {
       )
     }
 
-    // Ping léger pour confirmer la connexion réseau
     const db = mongoose.connection.db
     if (!db) {
       throw new Error('Instance de base de données non disponible')

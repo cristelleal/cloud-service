@@ -6,13 +6,11 @@ if (!MONGODB_URI) {
   throw new Error('La variable MONGODB_URI est manquante dans .env.local')
 }
 
-// Cache de connexion pour éviter de multiplier les connexions en développement
 interface MongooseCache {
   conn: typeof mongoose | null
   promise: Promise<typeof mongoose> | null
 }
 
-// Déclaration globale pour persister le cache entre les rechargements HMR
 declare global {
   var mongoose: MongooseCache
 }
