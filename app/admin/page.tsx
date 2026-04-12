@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 
-// Types pour les résultats de health check
 interface HealthResult {
   status: "ok" | "error" | "loading";
   service: string;
@@ -10,45 +9,92 @@ interface HealthResult {
   database?: string;
 }
 
-// Composant carte d'un service
+const SERVICE_META: Record<string, { label: string; icon: string }> = {
+  mongodb: { label: "MongoDB", icon: "🍃" },
+  tmdb: { label: "TMDB API", icon: "🎬" },
+  redis: { label: "Redis", icon: "⚡" },
+};
+
 function ServiceCard({ result }: { result: HealthResult }) {
   const isOk = result.status === "ok";
   const isLoading = result.status === "loading";
+  const meta = SERVICE_META[result.service] ?? {
+    label: result.service,
+    icon: "🔧",
+  };
 
   return (
     <div
-      className={`rounded-xl border p-5 shadow-sm transition-all ${
-        isLoading
-          ? "border-gray-200 bg-gray-50"
-          : isOk
-            ? "border-green-200 bg-green-50"
-            : "border-red-200 bg-red-50"
+      className={`bg-white rounded-2xl shadow-lg shadow-slate-200/60 p-6 transition-all duration-300 ${
+        !isLoading
+          ? "hover:shadow-xl hover:shadow-slate-200/70 hover:-translate-y-0.5"
+          : ""
       }`}
     >
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="font-semibold text-gray-800 uppercase text-sm tracking-wide">
-          {result.service}
-        </h3>
-        <span
-          className={`text-xs font-bold px-2 py-1 rounded-full ${
-            isLoading
-              ? "bg-gray-200 text-gray-600"
-              : isOk
-                ? "bg-green-200 text-green-800"
-                : "bg-red-200 text-red-800"
-          }`}
-        >
-          {isLoading ? "..." : isOk ? "✅ OK" : "❌ ERREUR"}
-        </span>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 ${
+              isLoading ? "bg-slate-100" : isOk ? "bg-emerald-50" : "bg-rose-50"
+            }`}
+          >
+            {meta.icon}
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 text-sm">
+              {meta.label}
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">{result.message}</p>
+          </div>
+        </div>
+
+        <div className="flex-shrink-0">
+          {isLoading ? (
+            <span className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full">
+              <span className="w-3 h-3 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+              Vérif…
+            </span>
+          ) : isOk ? (
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              Opérationnel
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              Erreur
+            </span>
+          )}
+        </div>
       </div>
-      <p className="text-sm text-gray-600">{result.message}</p>
-      {result.latency_ms !== undefined && (
-        <p className="text-xs text-gray-400 mt-2">
-          Latence : {result.latency_ms} ms
-        </p>
-      )}
-      {result.database && (
-        <p className="text-xs text-gray-400">Base : {result.database}</p>
+
+      {(result.latency_ms !== undefined || result.database) && (
+        <div className="mt-4 pt-4 border-t border-slate-100 flex items-center gap-6">
+          {result.latency_ms !== undefined && (
+            <div>
+              <p className="text-xs text-slate-400 mb-0.5">Latence</p>
+              <p
+                className={`text-sm font-semibold ${
+                  result.latency_ms < 100
+                    ? "text-emerald-600"
+                    : result.latency_ms < 500
+                      ? "text-amber-500"
+                      : "text-rose-500"
+                }`}
+              >
+                {result.latency_ms} ms
+              </p>
+            </div>
+          )}
+          {result.database && (
+            <div>
+              <p className="text-xs text-slate-400 mb-0.5">Base</p>
+              <p className="text-sm font-semibold text-slate-700 font-mono">
+                {result.database}
+              </p>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
@@ -56,20 +102,39 @@ function ServiceCard({ result }: { result: HealthResult }) {
 
 export default function AdminPage() {
   const [results, setResults] = useState<HealthResult[]>([
-    { status: "loading", service: "mongodb", message: "Vérification en cours..." },
-    { status: "loading", service: "tmdb",    message: "Vérification en cours..." },
-    { status: "loading", service: "redis",   message: "Vérification en cours..." },
+    {
+      status: "loading",
+      service: "mongodb",
+      message: "Vérification en cours...",
+    },
+    { status: "loading", service: "tmdb", message: "Vérification en cours..." },
+    {
+      status: "loading",
+      service: "redis",
+      message: "Vérification en cours...",
+    },
   ]);
   const [lastCheck, setLastCheck] = useState<string>("");
 
   const runHealthChecks = useCallback(async () => {
     setResults([
-      { status: "loading", service: "mongodb", message: "Vérification en cours..." },
-      { status: "loading", service: "tmdb",    message: "Vérification en cours..." },
-      { status: "loading", service: "redis",   message: "Vérification en cours..." },
+      {
+        status: "loading",
+        service: "mongodb",
+        message: "Vérification en cours...",
+      },
+      {
+        status: "loading",
+        service: "tmdb",
+        message: "Vérification en cours...",
+      },
+      {
+        status: "loading",
+        service: "redis",
+        message: "Vérification en cours...",
+      },
     ]);
 
-    // Lancement des trois checks en parallèle
     const checks = await Promise.allSettled([
       fetch("/api/health/mongodb").then((r) => r.json()),
       fetch("/api/health/tmdb").then((r) => r.json()),
@@ -81,14 +146,17 @@ export default function AdminPage() {
       checks.map((result, i) =>
         result.status === "fulfilled"
           ? result.value
-          : { status: "error", service: services[i], message: "Endpoint injoignable" },
+          : {
+              status: "error",
+              service: services[i],
+              message: "Endpoint injoignable",
+            },
       ),
     );
 
     setLastCheck(new Date().toLocaleTimeString("fr-FR"));
   }, []);
 
-  // Lancement au montage du composant
   useEffect(() => {
     const timer = window.setTimeout(() => {
       void runHealthChecks();
@@ -97,31 +165,92 @@ export default function AdminPage() {
     return () => window.clearTimeout(timer);
   }, [runHealthChecks]);
 
+  const allOk = results.every((r) => r.status === "ok");
+  const hasError = results.some((r) => r.status === "error");
+  const isChecking = results.some((r) => r.status === "loading");
+
   return (
-    <main className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+    <main className="min-h-screen bg-slate-50">
+      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-8 py-4">
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <span className="text-sm font-semibold text-slate-900 tracking-tight">
+            FilmsCatalogue
+          </span>
+          <span className="text-xs text-slate-500">Administration</span>
+        </div>
+      </header>
+
+      <div className="max-w-3xl mx-auto px-8 py-10">
+        <div className="flex items-start justify-between mb-10">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              🛠️ Admin — Santé des services
+            <h1 className="text-4xl font-semibold text-slate-900 tracking-tight">
+              Santé des services
             </h1>
-            {lastCheck && (
-              <p className="text-sm text-gray-500 mt-1">
-                Dernière vérification : {lastCheck}
-              </p>
-            )}
+            <p className="text-slate-400 mt-2 text-sm">
+              {lastCheck ? (
+                <>
+                  Dernière vérification à{" "}
+                  <span className="text-slate-600 font-medium">
+                    {lastCheck}
+                  </span>
+                </>
+              ) : (
+                "Vérification en cours…"
+              )}
+            </p>
           </div>
           <button
             onClick={() => {
               void runHealthChecks();
             }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+            disabled={isChecking}
+            className="flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl text-sm font-medium hover:bg-slate-700 disabled:opacity-40 transition-all active:scale-95 shadow-lg shadow-slate-900/15 mt-1"
           >
-            🔄 Relancer les checks
+            <svg
+              className={`w-3.5 h-3.5 ${isChecking ? "animate-spin" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            Relancer
           </button>
         </div>
 
-        <div className="grid gap-4">
+        {!isChecking && (
+          <div
+            className={`mb-6 flex items-center gap-3 px-5 py-4 rounded-2xl text-sm font-medium ${
+              allOk
+                ? "bg-emerald-50 text-emerald-800"
+                : hasError
+                  ? "bg-rose-50 text-rose-700"
+                  : "bg-amber-50 text-amber-700"
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                allOk
+                  ? "bg-emerald-500"
+                  : hasError
+                    ? "bg-rose-500"
+                    : "bg-amber-400"
+              }`}
+            />
+            {allOk
+              ? "Tous les services sont opérationnels."
+              : hasError
+                ? "Un ou plusieurs services sont en erreur."
+                : "Dégradation partielle détectée."}
+          </div>
+        )}
+
+        <div className="flex flex-col gap-4">
           {results.map((result) => (
             <ServiceCard key={result.service} result={result} />
           ))}
