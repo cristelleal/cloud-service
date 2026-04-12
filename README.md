@@ -2,6 +2,8 @@
 
 Application Next.js fullstack permettant de rechercher des films via l'API TMDB, de les ajouter en favoris (stockés dans MongoDB) et de bénéficier d'un cache Redis pour améliorer l'expérience.
 
+![Page catalogue](app/assets/movies-page.png)
+
 ---
 
 ## Stack technique
@@ -11,6 +13,18 @@ Application Next.js fullstack permettant de rechercher des films via l'API TMDB,
 - **Upstash Redis** : cache des films populaires
 - **TMDB API** : source des données films
 - **Tailwind CSS** : interface
+
+### Aperçu des pages
+
+![Modale détail film](app/assets/movies-page-movie-detail-modal.png)
+![Page admin](app/assets/admin-page.png)
+
+### Données & monitoring
+
+![Favoris MongoDB Atlas](app/assets/mongodb-atlas-page-favorites-data.png)
+![Navigateur Redis Upstash](app/assets/redis-page-data-browser.png)
+![Cache hits/misses Redis](app/assets/redis-page-hit-misses.png)
+![Logs monitoring Redis](app/assets/redis-page-monitoring-logs.png)
 
 ---
 
@@ -126,29 +140,5 @@ Un TTL court (60–300 s) serait acceptable pour des termes très populaires, ma
 Sans protection, si Upstash est down, `redis.get()` lève une exception qui remonte jusqu'au `catch` de la route → **500** pour l'utilisateur, alors que TMDB est parfaitement accessible.
 
 La solution est d'envelopper les appels Redis dans un try/catch dédié et continuer vers TMDB en cas d'échec.
-
-```ts
-const cacheKey = `tmdb:popular:page:${page}`
-
-try {
-  const cached = await redis.get<TMDBResponse>(cacheKey)
-  if (cached) {
-    console.log(`[Cache HIT] ${cacheKey}`)
-    return NextResponse.json({ success: true, data: cached }, { status: 200 })
-  }
-} catch (redisError) {
-  // Redis indisponible : on continue sans cache
-  console.warn('[Cache] Redis inaccessible, fallback TMDB:', redisError)
-}
-
-data = await getPopularMovies(page)
-
-try {
-  await redis.set(cacheKey, data, { ex: 3600 })
-} catch {
-  // Écriture échouée : pas bloquant
-  console.warn("[Cache] Impossible d'écrire dans Redis")
-}
-```
 
 **Principe** : Redis est une optimisation, pas une dépendance critique. L'application doit fonctionner (plus lentement) même si le cache est hors ligne.
