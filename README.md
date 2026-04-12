@@ -1,8 +1,10 @@
 # Cloud Service : Projet de catalogue de films ♥
 
-Application Next.js fullstack permettant de rechercher des films via l'API TMDB, de les ajouter en favoris (stockés dans MongoDB) et de bénéficier d'un cache Redis pour améliorer l'expérience. Design amélioré : épuré, light theme.
+Application Next.js fullstack permettant de rechercher des films via l'API TMDB, de les ajouter en favoris (stockés dans MongoDB) et de bénéficier d'un cache Redis pour améliorer l'expérience. Design amélioré : épuré, light theme. Application web hébergée sur Vercel et disponible en desktop et mobile version.
 
-![Page catalogue](app/assets/movies-page.png)
+#### ➤ https://cloud-service-mu.vercel.app/
+
+![Homepage](app/assets/homepage.png)
 
 ---
 
@@ -15,7 +17,7 @@ Application Next.js fullstack permettant de rechercher des films via l'API TMDB,
 - **Tailwind CSS** : interface
 
 ### Aperçu des pages
-
+![Page films](app/assets/movies-page.png)
 ![Modale détail film](app/assets/movies-page-movie-detail-modal.png)
 ![Page admin](app/assets/admin-page.png)
 
