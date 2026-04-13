@@ -1,0 +1,17 @@
+# Déclaration de l'ordre des stages
+stages:
+  - lint
+  - typecheck
+  - build
+
+# Image Docker de base utilisée par tous les jobs
+default:
+  image: node:20-alpine
+
+# Cache des dépendances node_modules entre les jobs
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
